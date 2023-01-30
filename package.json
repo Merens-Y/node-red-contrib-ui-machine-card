@@ -1,0 +1,25 @@
+{
+  "name": "node-red-contrib-ui-machine-card",
+  "version": "1.0.10",
+  "description": "A responsive card with machine data that give you a more detailed overview when clicked, plus indicates it's state with an LED light.",
+  "peerDependencies": {
+      "node-red-dashboard": ">2.13.0"
+  },
+   "keywords": [
+    "node-red",
+    "node-red-dashboard",
+    "machine",
+    "card"
+  ],
+  "node-red": {
+    "nodes": {
+      "ui_machinecard": "machine_card.js"
+    }
+  },
+  "main": "machine_card.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Sotomayor",
+  "license": "ISC"
+}

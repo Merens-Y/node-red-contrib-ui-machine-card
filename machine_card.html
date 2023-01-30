@@ -1,0 +1,105 @@
+<!-- 
+    A node’s HTML file provides the following things:
+
+    the main node definition that is registered with the editor
+    the edit template
+    the help text 
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('ui_machinecard', {    // type MUST start with ui_
+        category: 'dashboard',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            group: { type: 'ui_group', required: true },
+            order: { value: 0 },
+            width: {
+                value: 0,
+                validate: function (v) {
+                    var valid = true
+                    var width = v || 0;
+                    var currentGroup = $('#node-input-group').val() || this.group;
+                    var groupNode = RED.nodes.node(currentGroup);
+                    valid = !groupNode || +width <= +groupNode.width;
+                    $("#node-input-size").toggleClass("input-error", !valid);
+                    return valid;
+                }
+            },
+            height: { value: 0 },
+            name: { value: '' },
+            //User Defined values
+            machineName: { value: 'Default machine name' },
+            controlOutput: { value: 0 },
+            machineSN: { value: "Serial Number"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-th-list",
+        paletteLabel: "machine card",
+        label: function () {
+            return this.name || "machine card";
+        },
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function () {
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="ui_machinecard">
+    <div class="form-row" id="template-row-group">
+        <label for="node-input-group"><i class="fa fa-table"></i> Group</span></label>
+        <input type="text" id="node-input-group">
+    </div>
+    <div class="form-row" id="template-row-size">
+        <label><i class="fa fa-object-group"></i> Size</span></label>
+        <input type="hidden" id="node-input-width">
+        <input type="hidden" id="node-input-height">
+        <button class="editor-button" id="node-input-size"></button>
+    </div>
+    </br>
+    <div class="form-row">
+        <label for="node-input-machineName"><i class="fa fa-industry" aria-hidden="true"></i> Machine Name</span></label>
+        <input type="text" id="node-input-machineName"/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-machineSN"><i class="fa fa-barcode" aria-hidden="true"></i> Machine SN</span></label>
+        <input type="text" id="node-input-machineSN" placeholder="Serial Number"/>
+    </div>
+    <div class="form-row">
+        <label for="node-input-controlOutput"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i>Control Output</span></label>
+        <input type="number" id="node-input-controlOutput"/>
+    </div>
+    </br>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="ui_machinecard">
+    <p>A Node Red dashboard ui node to display a card with brief information about a particular machine.</p>
+    <h3>Expected payload:</h3>
+    <dl class="message-properties">
+        <dt>numCycles<span class="property-type">number</span></dt>
+        <dd>number of cycles completed by the machine.</dd>
+        <dt>minCycleTime<span class="property-type">number</span></dt>
+        <dd>The minimum cycle time of the machine in the current session.</dd>
+        <dt>maxCycleTime<span class="property-type">number</span></dt>
+        <dd>The maximum cycle time of the machine in the current session.</dd>
+        <dt>isRunning<span class="property-type">boolean</span></dt>
+        <dd>Wether the machine is running any cycle, defaults to false.</dd>
+        <dt>warning<span class="property-type">boolean</span></dt>
+        <dd>Wether the machine should show the warning or not.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>Takes the <code>msg.payload</code> object and displays the data from the machine's cycles on it.</p>
+    <p>The node's <code>isRunning</code> boolean modifies the led in the corner of the card, red meaning Off and green meaning On.</p>
+    <p>The node's <code>warning</code> boolean modifies the card, showing a warning message when two hours of inactivity has passed.</p>
+</script>
